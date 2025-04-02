@@ -1,0 +1,5 @@
+# Don't commit files with sensitive information
+*
+
+# Don't ignore .gitignore itself
+!.gitignore
