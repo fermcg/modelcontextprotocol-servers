@@ -1,0 +1,205 @@
+# Add top-level 'x-common' YAML anchor for reusable configuration
+x-common: &common-config
+  image: mcp-server:latest
+  restart: unless-stopped
+  env_file:
+    - ../.env
+  environment:
+    NODE_ENV: production
+
+services:
+  # Shared build section that all services will use
+  server-base:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: mcp-server:latest
+    profiles: ["build-only"]
+    command: ["echo", "Base image built successfully"]
+
+  brave-search:
+    <<: *common-config
+    container_name: mcp-brave-search
+    env_file:
+      - ./.environment/brave-search.env
+    profiles: ["brave-search", "default"]
+    ports:
+      - "8201:8201"
+    # No build section - uses the common image
+    command: >
+      sh -c 'run-brave-search.sh 8201'
+
+  everart:
+    <<: *common-config
+    container_name: mcp-everart
+    env_file:
+      - ./.environment/everart.env
+    profiles: ["everart"]
+    ports:
+      - "8202:8202"
+    command: >
+      sh -c 'run-everart.sh 8202'
+
+  fetch:
+    <<: *common-config
+    container_name: mcp-fetch
+    profiles: ["fetch", "default"]
+    ports:
+      - "8203:8203"
+    command: >
+      sh -c 'run-fetch.sh 8203'
+
+  filesystem:
+    <<: *common-config
+    container_name: mcp-filesystem
+    env_file:
+      - ./.environment/filesystem.env
+    profiles: ["filesystem", "default"]
+    ports:
+      - "8204:8204"
+    command: >
+      sh -c 'run-filesystem.sh 8204'
+
+  gdrive:
+    <<: *common-config
+    container_name: mcp-gdrive
+    env_file:
+      - ./.environment/gdrive.env
+    profiles: ["gdrive"]
+    ports:
+      - "8205:8205"
+    command: >
+      sh -c 'run-gdrive.sh 8205'
+
+  git:
+    <<: *common-config
+    container_name: mcp-git
+    env_file:
+      - ./.environment/git.env
+    profiles: ["git"]
+    ports:
+      - "8206:8206"
+    command: >
+      sh -c 'run-git.sh 8206'
+
+  github:
+    <<: *common-config
+    container_name: mcp-github
+    env_file:
+      - ./.environment/github.env
+    profiles: ["github"]
+    ports:
+      - "8207:8207"
+    command: >
+      sh -c 'run-github.sh 8207'
+
+  gitlab:
+    <<: *common-config
+    container_name: mcp-gitlab
+    env_file:
+      - ./.environment/gitlab.env
+    profiles: ["gitlab"]
+    ports:
+      - "8208:8208"
+    command: >
+      sh -c 'run-gitlab.sh 8208'
+
+  google-maps:
+    <<: *common-config
+    container_name: mcp-google-maps
+    env_file:
+      - ./.environment/google-maps.env
+    profiles: ["google-maps"]
+    ports:
+      - "8209:8209"
+    command: >
+      sh -c 'run-google-maps.sh 8209'
+
+  memory:
+    <<: *common-config
+    container_name: mcp-memory
+    env_file:
+      - ./.environment/memory.env
+    volumes:
+      - memory-data:/var/lib/mcp-server/memory
+    profiles: ["memory", "default"]
+    ports:
+      - "8210:8210"
+    command: >
+      sh -c 'run-memory.sh 8210'
+
+  postgres:
+    <<: *common-config
+    container_name: mcp-postgres
+    env_file:
+      - ./.environment/postgres.env
+    profiles: ["postgres", "default"]
+    ports:
+      - "8211:8211"
+    command: >
+      sh -c 'run-postgres.sh 8211'
+
+  puppeteer:
+    <<: *common-config
+    container_name: mcp-puppeteer
+    env_file:
+      - ./.environment/puppeteer.env
+    profiles: ["puppeteer", "default"]
+    ports:
+      - "8212:8212"
+    environment:
+      NODE_ENV: production
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+      PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chromium"
+    command: >
+      sh -c 'run-puppeteer.sh 8212'
+
+  redis:
+    <<: *common-config
+    container_name: mcp-redis
+    env_file:
+      - ./.environment/redis.env
+    profiles: ["redis"]
+    ports:
+      - "8213:8213"
+    command: >
+      sh -c 'run-redis.sh 8213'
+
+  sequential-thinking:
+    <<: *common-config
+    container_name: mcp-sequential-thinking
+    profiles: ["sequential-thinking", "default"]
+    ports:
+      - "8214:8214"
+    command: >
+      sh -c 'run-sequential-thinking.sh 8214'
+
+  time:
+    <<: *common-config
+    container_name: mcp-time
+    env_file:
+      - ./.environment/time.env
+    profiles: ["time", "default"]
+    ports:
+      - "8215:8215"
+    command: >
+      sh -c 'run-time.sh 8215'
+
+  mcpunk:
+    <<: *common-config
+    container_name: mcp-mcpunk
+    env_file:
+      - ./.environment/mcpunk.env
+    profiles: ["mcpunk"]
+    ports:
+      - "8216:8216"
+    volumes:
+      - mcpunk-data:/root/.mcpunk
+    command: >
+      sh -c 'run-mcpunk.sh 8216'
+
+volumes:
+  memory-data:
+    name: memory-data
+  mcpunk-data:
+    name: mcpunk-data
