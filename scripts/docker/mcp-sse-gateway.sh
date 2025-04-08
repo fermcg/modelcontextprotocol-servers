@@ -71,6 +71,7 @@ load_gateway_config() {
 
   ALL_SERVERS=""
   ENABLED_SERVERS=""
+  DISABLED_SERVERS=""
 
   current_srv=""
   disabled="false"
@@ -90,6 +91,8 @@ load_gateway_config() {
           ALL_SERVERS="$ALL_SERVERS $current_srv"
           if [ "$disabled" = "false" ]; then
             ENABLED_SERVERS="$ENABLED_SERVERS $current_srv"
+          else
+            DISABLED_SERVERS="$DISABLED_SERVERS $current_srv"
           fi
           current_srv=""
         fi
@@ -99,12 +102,17 @@ load_gateway_config() {
 
   export ALL_SERVERS
   export ENABLED_SERVERS
+  export DISABLED_SERVERS
 }
 
 status_servers() {
   for srv in $ALL_SERVERS; do
     pidfile="$PID_DIR/mcp-sse-$srv.pid"
-    disabled=$(grep -A5 "  - $srv:" "$GATEWAY_CONFIG" | grep 'disabled:' | awk '{print $2}')
+    if echo "$DISABLED_SERVERS" | grep -qw "$srv"; then
+      disabled="true"
+    else
+      disabled="false"
+    fi
     if [ "$disabled" = "true" ]; then
       echo "$srv: Disabled"
     else
@@ -219,6 +227,19 @@ case "$COMMAND" in
     fi
     ;;
   run)
+    # Debug: log environment and cwd for diagnosis
+    for srv in $SERVERS; do
+      debug_log="/tmp/mcp-sse-debug-$srv.log"
+      {
+        echo "==== Debug info for $srv at $(date) ===="
+        echo "PWD: $(pwd)"
+        echo "User: $(whoami)"
+        echo "Environment:"
+        env | sort
+        echo "==== End debug info ===="
+      } > "$debug_log" 2>&1 &
+    done
+
     if [ -z "$SERVERS" ]; then
       SRVS="$ENABLED_SERVERS"
     else
