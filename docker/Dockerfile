@@ -49,6 +49,7 @@ RUN uv tool install mcp-proxy
 
 # Copy and set up scripts and configs
 COPY scripts/docker/run-brave-search.sh /usr/local/bin
+COPY scripts/docker/run-context7.sh /usr/local/bin
 COPY scripts/docker/run-everart.sh /usr/local/bin
 COPY scripts/docker/run-fetch.sh /usr/local/bin
 COPY scripts/docker/run-filesystem.sh /usr/local/bin

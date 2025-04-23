@@ -22,7 +22,7 @@ services:
     container_name: mcp-brave-search
     env_file:
       - ./.environment/brave-search.env
-    profiles: ["brave-search", "default"]
+    profiles: ["brave-search", "default", "all"]
     ports:
       - "8201:8201"
     # No build section - uses the common image
@@ -34,7 +34,7 @@ services:
     container_name: mcp-everart
     env_file:
       - ./.environment/everart.env
-    profiles: ["everart"]
+    profiles: ["everart", "all"]
     ports:
       - "8202:8202"
     command: >
@@ -43,7 +43,7 @@ services:
   fetch:
     <<: *common-config
     container_name: mcp-fetch
-    profiles: ["fetch", "default"]
+    profiles: ["fetch", "default", "all"]
     ports:
       - "8203:8203"
     command: >
@@ -54,7 +54,7 @@ services:
     container_name: mcp-filesystem
     env_file:
       - ./.environment/filesystem.env
-    profiles: ["filesystem", "default"]
+    profiles: ["filesystem", "default", "all"]
     ports:
       - "8204:8204"
     command: >
@@ -65,7 +65,7 @@ services:
     container_name: mcp-gdrive
     env_file:
       - ./.environment/gdrive.env
-    profiles: ["gdrive"]
+    profiles: ["gdrive", "all"]
     ports:
       - "8205:8205"
     command: >
@@ -76,7 +76,7 @@ services:
     container_name: mcp-git
     env_file:
       - ./.environment/git.env
-    profiles: ["git"]
+    profiles: ["git", "all"]
     ports:
       - "8206:8206"
     command: >
@@ -87,7 +87,7 @@ services:
     container_name: mcp-github
     env_file:
       - ./.environment/github.env
-    profiles: ["github"]
+    profiles: ["github", "all"]
     ports:
       - "8207:8207"
     command: >
@@ -98,7 +98,7 @@ services:
     container_name: mcp-gitlab
     env_file:
       - ./.environment/gitlab.env
-    profiles: ["gitlab"]
+    profiles: ["gitlab", "all"]
     ports:
       - "8208:8208"
     command: >
@@ -109,7 +109,7 @@ services:
     container_name: mcp-google-maps
     env_file:
       - ./.environment/google-maps.env
-    profiles: ["google-maps"]
+    profiles: ["google-maps", "all"]
     ports:
       - "8209:8209"
     command: >
@@ -122,7 +122,7 @@ services:
       - ./.environment/memory.env
     volumes:
       - memory-data:/var/lib/mcp-server/memory
-    profiles: ["memory", "default"]
+    profiles: ["memory", "default", "all"]
     ports:
       - "8210:8210"
     command: >
@@ -133,7 +133,7 @@ services:
     container_name: mcp-postgres
     env_file:
       - ./.environment/postgres.env
-    profiles: ["postgres", "default"]
+    profiles: ["postgres", "default", "all"]
     ports:
       - "8211:8211"
     command: >
@@ -144,7 +144,7 @@ services:
     container_name: mcp-puppeteer
     env_file:
       - ./.environment/puppeteer.env
-    profiles: ["puppeteer", "default"]
+    profiles: ["puppeteer", "default", "all"]
     ports:
       - "8212:8212"
     environment:
@@ -159,7 +159,7 @@ services:
     container_name: mcp-redis
     env_file:
       - ./.environment/redis.env
-    profiles: ["redis"]
+    profiles: ["redis", "all"]
     ports:
       - "8213:8213"
     command: >
@@ -168,7 +168,7 @@ services:
   sequential-thinking:
     <<: *common-config
     container_name: mcp-sequential-thinking
-    profiles: ["sequential-thinking", "default"]
+    profiles: ["sequential-thinking", "default", "all"]
     ports:
       - "8214:8214"
     command: >
@@ -179,7 +179,7 @@ services:
     container_name: mcp-time
     env_file:
       - ./.environment/time.env
-    profiles: ["time", "default"]
+    profiles: ["time", "default", "all"]
     ports:
       - "8215:8215"
     command: >
@@ -190,13 +190,22 @@ services:
     container_name: mcp-mcpunk
     env_file:
       - ./.environment/mcpunk.env
-    profiles: ["mcpunk"]
+    profiles: ["mcpunk", "all"]
     ports:
       - "8216:8216"
     volumes:
       - mcpunk-data:/root/.mcpunk
     command: >
       sh -c 'run-mcpunk.sh 8216'
+
+  context7:
+    <<: *common-config
+    container_name: context7
+    profiles: ["context7", "default", "all"]
+    ports:
+      - "8217:8217"
+    command: >
+      sh -c 'run-context7.sh 8217'
 
 volumes:
   memory-data:
