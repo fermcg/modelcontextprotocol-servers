@@ -200,12 +200,36 @@ services:
 
   context7:
     <<: *common-config
-    container_name: context7
+    container_name: mcp-context7
     profiles: ["context7", "default", "all"]
     ports:
       - "8217:8217"
     command: >
       sh -c 'run-context7.sh 8217'
+
+  hm-excel:
+    <<: *common-config
+    container_name: mcp-hm-excel
+    env_file:
+      - ./.environment/hm-excel.env
+    profiles: ["hm-excel", "default", "all"]
+    ports:
+      - "8218:8218"
+    volumes:
+      - /home/fguedes/.excel-mcp:/var/lib/mcp-server/excel
+    command: >
+      sh -c 'run-hm-excel.sh 8218'
+
+  ac-excel:
+    <<: *common-config
+    container_name: mcp-ac-excel
+    profiles: ["ac-excel", "all"]
+    ports:
+      - "8219:8219"
+    volumes:
+      - /home/fguedes/.excel-mcp:/var/lib/mcp-server/excel
+    command: >
+      sh -c 'run-ac-excel.sh 8219'
 
 volumes:
   memory-data:
